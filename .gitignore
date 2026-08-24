@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 backend/venv/
+backend/chroma_db/
+backend/.env
