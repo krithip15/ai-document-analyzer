@@ -1,16 +1,25 @@
-# React + Vite
+# DocuMind
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+AI-powered PDF Q&A using Retrieval-Augmented Generation (RAG). Upload a document, ask questions, get answers grounded in the text with source page references.
 
-Currently, two official plugins are available:
+**Stack:** React · FastAPI · ChromaDB · Sentence Transformers · Ollama (Qwen2.5) · PyPDF
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## How it works
 
-## React Compiler
+PDF → chunked → embedded → stored in ChromaDB → retrieved on query → answered by Qwen2.5 with source pages.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Setup
 
-## Expanding the Oxlint configuration
+```bash
+# Backend
+cd backend
+python -m venv venv && source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+# Ollama
+ollama pull qwen2.5:3b
+
+# Frontend
+npm install && npm run dev
+```
