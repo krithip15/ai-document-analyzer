@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File
 from pdf_processor import extract_text
+from chunker import create_chunks
 
 app = FastAPI()
 
@@ -22,13 +23,10 @@ def health():
 async def upload_document(file: UploadFile = File(...)):
     pages = extract_text(file.file)
 
-    total_characters = sum(
-        len(page["text"])
-        for page in pages
-    )
+    chunks = create_chunks(pages)
 
     return {
         "filename": file.filename,
         "pages": len(pages),
-        "characters": total_characters
+        "chunks": len(chunks)
     }
