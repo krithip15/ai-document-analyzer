@@ -23,6 +23,12 @@ dist-ssr
 *.sln
 *.sw?
 
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
 backend/venv/
+
+# ChromaDB local data
 backend/chroma_db/
-backend/.env

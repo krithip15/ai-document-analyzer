@@ -3,9 +3,18 @@ from pydantic import BaseModel
 from pdf_processor import extract_text
 from chunker import create_chunks
 from vector_store import add_chunks, search_chunks
+from rag import generate_answer
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def root():
@@ -46,3 +55,11 @@ def search_document(request: SearchRequest):
     results = search_chunks(request.query)
 
     return results
+
+class QuestionRequest(BaseModel):
+    question: str
+
+
+@app.post("/ask")
+def ask_question(request: QuestionRequest):
+    return generate_answer(request.question)

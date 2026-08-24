@@ -1,8 +1,7 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
-function UploadBox() {
+function UploadBox({ file, setFile }) {
   const fileInputRef = useRef(null);
-  const [file, setFile] = useState(null);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
