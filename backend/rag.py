@@ -10,18 +10,6 @@ def generate_answer(question, filename):
     # 1. Retrieve relevant chunks from ChromaDB
     results = search_chunks(question, filename, n_results=5)
 
-    print("\n--- RETRIEVED CHUNKS ---")
-
-    distances = results["distances"][0]
-
-    for document, metadata, distance in zip(
-        results["documents"][0], results["metadatas"][0], distances
-    ):
-        print(f"\nPage: {metadata['page']}")
-        print(f"Distance: {distance}")
-        print(document[:300])
-        print("--------------------")
-
     documents = results["documents"][0]
     metadatas = results["metadatas"][0]
 

@@ -458,12 +458,17 @@ button {
   letter-spacing: 0.8px;
 }
 
-.answer-section > p {
-  margin: 0;
-
+.answer-text {
   color: #e3ded3;
+  line-height: 1.8;
+}
 
-  line-height: 1.75;
+.answer-text p {
+  margin: 0 0 14px;
+}
+
+.answer-text p:last-child {
+  margin-bottom: 0;
 }
 
 /* =========================
@@ -539,4 +544,47 @@ button {
   .selected-file {
     gap: 12px;
   }
+}
+
+.thinking-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.spinner {
+  width: 13px;
+  height: 13px;
+
+  border: 2px solid rgba(23, 23, 23, 0.25);
+  border-top-color: #171717;
+
+  border-radius: 50%;
+
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.answer-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.answer-section::before {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 3px;
+  height: 100%;
+
+  background: #d97757;
 }

@@ -104,7 +104,7 @@ function App() {
 
                 <p>
                   {documentInfo.pages} pages · {documentInfo.chunks} chunks ·
-                  Ready to analyze
+                  Ready for questions
                 </p>
               </div>
             </div>
@@ -133,7 +133,14 @@ function App() {
                   onClick={askQuestion}
                   disabled={!question.trim() || asking}
                 >
-                  {asking ? "Thinking..." : "Ask"}
+                  {asking ? (
+                    <span className="thinking-state">
+                      <span className="spinner"></span>
+                      Thinking
+                    </span>
+                  ) : (
+                    "Ask"
+                  )}
                 </button>
               </div>
 
@@ -141,7 +148,14 @@ function App() {
                 <div className="answer-section">
                   <h3>Answer</h3>
 
-                  <p>{answer}</p>
+                  <div className="answer-text">
+                    {answer
+                      .split("\n")
+                      .map(
+                        (paragraph, index) =>
+                          paragraph.trim() && <p key={index}>{paragraph}</p>,
+                      )}
+                  </div>
 
                   {sources.length > 0 && (
                     <div className="sources">
