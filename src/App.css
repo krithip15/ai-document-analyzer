@@ -167,7 +167,7 @@
 
   &::before,
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: -4.5px;
     border: 5px solid transparent;
@@ -181,4 +181,15 @@
     right: 0;
     border-right-color: var(--border);
   }
+}
+
+.upload-box.dragging {
+  border-color: #6366f1;
+  background: #eef2ff;
+  transform: scale(1.01);
+}
+
+.upload-box {
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
