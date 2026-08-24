@@ -95,45 +95,71 @@ function App() {
         </button>
 
         {documentInfo && (
-          <section className="question-section">
-            <h2>Ask a question</h2>
+          <>
+            <div className="document-status">
+              <div className="status-icon">✓</div>
 
-            <div className="question-box">
-              <input
-                type="text"
-                value={question}
-                onChange={(event) => setQuestion(event.target.value)}
-                placeholder="What dataset was used in the study?"
-              />
+              <div>
+                <strong>{documentInfo.filename}</strong>
 
-              <button
-                onClick={askQuestion}
-                disabled={!question.trim() || asking}
-              >
-                {asking ? "Thinking..." : "Ask"}
-              </button>
+                <p>
+                  {documentInfo.pages} pages · {documentInfo.chunks} chunks ·
+                  Ready to analyze
+                </p>
+              </div>
             </div>
 
-            {answer && (
-              <div className="answer-section">
-                <h3>Answer</h3>
+            <section className="question-section">
+              <h2>Ask anything about this document</h2>
 
-                <p>{answer}</p>
+              <p className="question-subtitle">
+                Ask questions and get answers grounded in the uploaded document.
+              </p>
 
-                {sources.length > 0 && (
-                  <div className="sources">
-                    <h4>Sources</h4>
+              <div className="question-box">
+                <input
+                  type="text"
+                  value={question}
+                  onChange={(event) => setQuestion(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      askQuestion();
+                    }
+                  }}
+                  placeholder="What dataset was used in the study?"
+                />
 
-                    {sources.map((source, index) => (
-                      <span key={index} className="source">
-                        Page {source.page}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                <button
+                  onClick={askQuestion}
+                  disabled={!question.trim() || asking}
+                >
+                  {asking ? "Thinking..." : "Ask"}
+                </button>
               </div>
-            )}
-          </section>
+
+              {answer && (
+                <div className="answer-section">
+                  <h3>Answer</h3>
+
+                  <p>{answer}</p>
+
+                  {sources.length > 0 && (
+                    <div className="sources">
+                      <h4>Sources</h4>
+
+                      <div className="source-list">
+                        {sources.map((source, index) => (
+                          <span key={index} className="source">
+                            Page {source.page}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </section>
+          </>
         )}
       </main>
     </>

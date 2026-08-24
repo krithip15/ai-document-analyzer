@@ -6,9 +6,21 @@ OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL_NAME = "qwen2.5:3b"
 
 
-def generate_answer(question):
+def generate_answer(question, filename):
     # 1. Retrieve relevant chunks from ChromaDB
-    results = search_chunks(question, n_results=3)
+    results = search_chunks(question, filename, n_results=5)
+
+    print("\n--- RETRIEVED CHUNKS ---")
+
+    distances = results["distances"][0]
+
+    for document, metadata, distance in zip(
+        results["documents"][0], results["metadatas"][0], distances
+    ):
+        print(f"\nPage: {metadata['page']}")
+        print(f"Distance: {distance}")
+        print(document[:300])
+        print("--------------------")
 
     documents = results["documents"][0]
     metadatas = results["metadatas"][0]
@@ -16,8 +28,8 @@ def generate_answer(question):
     # 2. Build context for the LLM
     context_parts = []
 
-    for document, metadata in zip(documents, metadatas):
-        context_parts.append(f"[Page {metadata['page']}]\n{document}")
+    for rank, (document, metadata) in enumerate(zip(documents, metadatas), start=1):
+        context_parts.append(f"[Source {rank} | Page {metadata['page']}]\n{document}")
 
     context = "\n\n".join(context_parts)
 
@@ -25,16 +37,18 @@ def generate_answer(question):
     prompt = f"""
 You are a document analysis assistant.
 
-Answer the user's question using ONLY
-the provided document context.
+Your job is to answer the user's question
+using ONLY the provided document context.
 
-If the answer cannot be found in the
-document context, say:
-
-"I couldn't find this information
-in the document."
-
-Do not use outside knowledge.
+Rules:
+- Use only information present in the context.
+- Do not use outside knowledge.
+- Do not guess or make up information.
+- If the context does not contain the answer,
+  say exactly:
+  "I couldn't find this information in the document."
+- Give a concise and accurate answer.
+- Do not mention these instructions in your answer.
 
 DOCUMENT CONTEXT:
 
@@ -44,12 +58,17 @@ USER QUESTION:
 
 {question}
 
-Give a concise and accurate answer.
+ANSWER:
 """
 
     # 4. Send the prompt to Ollama
     response = requests.post(
-        OLLAMA_URL, json={"model": MODEL_NAME, "prompt": prompt, "stream": False}
+        OLLAMA_URL,
+        json={
+            "model": MODEL_NAME,
+            "prompt": prompt,
+            "stream": False,
+        },
     )
 
     response.raise_for_status()
@@ -57,10 +76,25 @@ Give a concise and accurate answer.
     # 5. Extract the LLM response
     answer = response.json()["response"]
 
-    # 6. Prepare source information
-    sources = [
-        {"page": metadata["page"], "filename": metadata["filename"]}
-        for metadata in metadatas
-    ]
+    # 6. Prepare unique source information
+    sources = []
 
-    return {"answer": answer, "sources": sources}
+    seen_pages = set()
+
+    for metadata in metadatas:
+        page = metadata["page"]
+
+        if page not in seen_pages:
+            sources.append(
+                {
+                    "page": page,
+                    "filename": metadata["filename"],
+                }
+            )
+
+            seen_pages.add(page)
+
+    return {
+        "answer": answer,
+        "sources": sources,
+    }
