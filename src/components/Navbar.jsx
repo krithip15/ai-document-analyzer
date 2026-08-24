@@ -1,11 +1,13 @@
 function Navbar() {
   return (
     <nav className="navbar">
-      <div className="logo">
-        <span>◉</span> DocuMind
+      <div className="brand">
+        <div className="brand-icon">✦</div>
+
+        <span>DocuMind</span>
       </div>
 
-      <div className="nav-label">AI Document Analyzer</div>
+      <span className="nav-label">AI Document Analyzer</span>
     </nav>
   );
 }
