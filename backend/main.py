@@ -16,18 +16,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 def root():
-    return {
-        "message": "DocuMind API is running"
-    }
+    return {"message": "DocuMind API is running"}
 
 
 @app.get("/health")
 def health():
-    return {
-        "status": "healthy"
-    }
+    return {"status": "healthy"}
+
 
 @app.post("/upload")
 async def upload_document(file: UploadFile = File(...)):
@@ -35,16 +33,10 @@ async def upload_document(file: UploadFile = File(...)):
 
     chunks = create_chunks(pages)
 
-    stored_chunks = add_chunks(
-        chunks,
-        file.filename
-    )
+    stored_chunks = add_chunks(chunks, file.filename)
 
-    return {
-        "filename": file.filename,
-        "pages": len(pages),
-        "chunks": stored_chunks
-    }
+    return {"filename": file.filename, "pages": len(pages), "chunks": stored_chunks}
+
 
 class SearchRequest(BaseModel):
     query: str
@@ -52,12 +44,14 @@ class SearchRequest(BaseModel):
 
 @app.post("/search")
 def search_document(request: SearchRequest):
-    results = search_chunks(request.query)
+    results = search_chunks(request.question, request.filename)
 
     return results
 
+
 class QuestionRequest(BaseModel):
     question: str
+    filename: str
 
 
 @app.post("/ask")

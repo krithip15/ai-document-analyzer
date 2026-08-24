@@ -13,10 +13,7 @@ def create_chunks(pages, chunk_size=1000, overlap=200):
             chunk_text = text[start:end]
 
             if chunk_text.strip():
-                chunks.append({
-                    "text": chunk_text,
-                    "page": page_number
-                })
+                chunks.append({"text": chunk_text, "page": page_number})
 
             start += chunk_size - overlap
 

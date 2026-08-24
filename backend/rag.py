@@ -2,17 +2,13 @@ import requests
 
 from vector_store import search_chunks
 
-
 OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL_NAME = "qwen2.5:3b"
 
 
 def generate_answer(question):
     # 1. Retrieve relevant chunks from ChromaDB
-    results = search_chunks(
-        question,
-        n_results=3
-    )
+    results = search_chunks(question, n_results=3)
 
     documents = results["documents"][0]
     metadatas = results["metadatas"][0]
@@ -21,9 +17,7 @@ def generate_answer(question):
     context_parts = []
 
     for document, metadata in zip(documents, metadatas):
-        context_parts.append(
-            f"[Page {metadata['page']}]\n{document}"
-        )
+        context_parts.append(f"[Page {metadata['page']}]\n{document}")
 
     context = "\n\n".join(context_parts)
 
@@ -55,12 +49,7 @@ Give a concise and accurate answer.
 
     # 4. Send the prompt to Ollama
     response = requests.post(
-        OLLAMA_URL,
-        json={
-            "model": MODEL_NAME,
-            "prompt": prompt,
-            "stream": False
-        }
+        OLLAMA_URL, json={"model": MODEL_NAME, "prompt": prompt, "stream": False}
     )
 
     response.raise_for_status()
@@ -70,14 +59,8 @@ Give a concise and accurate answer.
 
     # 6. Prepare source information
     sources = [
-        {
-            "page": metadata["page"],
-            "filename": metadata["filename"]
-        }
+        {"page": metadata["page"], "filename": metadata["filename"]}
         for metadata in metadatas
     ]
 
-    return {
-        "answer": answer,
-        "sources": sources
-    }
+    return {"answer": answer, "sources": sources}

@@ -51,7 +51,7 @@ def add_chunks(chunks, filename):
     return len(documents)
 
 
-def search_chunks(query, n_results=3):
+def search_chunks(query, filename, n_results=3):
     # Convert the question into an embedding
     query_embedding = embedding_model.encode(
         [query]
@@ -60,7 +60,8 @@ def search_chunks(query, n_results=3):
     # Search ChromaDB
     results = collection.query(
         query_embeddings=query_embedding,
-        n_results=n_results
+        n_results=n_results,
+        where={"filename": filename}
     )
 
     return results

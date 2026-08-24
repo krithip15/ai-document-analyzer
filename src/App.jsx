@@ -55,6 +55,7 @@ function App() {
         },
         body: JSON.stringify({
           question: question,
+          filename: file?.name,
         }),
       });
 
